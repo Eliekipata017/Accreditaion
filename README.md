@@ -1,2 +1,2 @@
 # Accreditaion
-Un système qui permet à le precessus d'accreditaion à l'inspection  
+Un système qui permet d'automatiser le precessus d'accreditaion à l'inspection 
