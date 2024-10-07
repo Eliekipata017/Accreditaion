@@ -1,0 +1,195 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Poppins;
+}
+
+html {
+  height: 100vh;
+}
+html body {
+  height: 100vh;
+}
+html body .dash-container {
+  height: 100vh;
+  display: flex;
+}
+html body .dash-container .sidebarre {
+  height: 100%;
+  width: 25%;
+}
+html body .dash-container .sidebarre .sidecontent {
+  height: 100%;
+  padding: 2em;
+  color: #0E95DB;
+}
+html body .dash-container .sidebarre .sidecontent .title-div h3 {
+  font-size: 25px;
+}
+html body .dash-container .sidebarre .sidecontent .side-barre-navigation {
+  height: 80%;
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+}
+html body .dash-container .sidebarre .sidecontent .side-barre-navigation a {
+  margin-top: 1em;
+  border-radius: 5px;
+  display: block;
+  font-size: 14px;
+  text-decoration: none;
+  padding: 0.6em;
+  transition: all 0.3s ease-in-out;
+  color: #212121;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+html body .dash-container .sidebarre .sidecontent .side-barre-navigation a .link-div {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+html body .dash-container .sidebarre .sidecontent .side-barre-navigation a span {
+  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+html body .dash-container .sidebarre .sidecontent .side-barre-navigation a span svg {
+  height: 20px;
+  width: 20px;
+  transition: all 0.3s ease-in-out;
+}
+html body .dash-container .sidebarre .sidecontent .side-barre-navigation a .round {
+  height: 1.7em;
+  width: 1.9em;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #069BFF;
+  padding: 0.2em;
+  transition: all 0.3s ease-in-out;
+}
+html body .dash-container .sidebarre .sidecontent .side-barre-navigation a:hover {
+  background-color: #0E95DB;
+  color: white;
+}
+html body .dash-container .sidebarre .sidecontent .side-barre-navigation .activate {
+  background-color: #069BFF;
+  color: white;
+}
+html body .dash-container .sidebarre .sidecontent .side-barre-navigation .activate .link-div span svg{
+  stroke: white;
+}
+html body .dash-container .sidebarre .sidecontent .side-barre-navigation a:hover > .link-div > span > svg {
+  stroke: white;
+}
+html body .dash-container .sidebarre .sidecontent .side-barre-navigation a:hover > .round {
+  background-color: #ffffff;
+}
+html body .dash-container .sidebarre .sidecontent .side-barre-navigation a:hover > .round h4 {
+  color: #515151;
+}
+html body .dash-container .dash-content {
+  width: 75%;
+  background-color: rgba(139, 143, 255, 0.24);
+  padding: 4em;
+}
+html body .dash-container .dash-content .text-title h3 {
+  font-size: 35px;
+  font-weight: 500;
+  color: #2C2B2B;
+}
+html body .dash-container .dash-content .dash-body {
+  height: 80%;
+}
+html body .dash-container .dash-content .dash-body .div-state {
+  margin-top: 2em;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2em;
+}
+html body .dash-container .dash-content .dash-body .div-state .card-state {
+  padding: 0.9em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 8px;
+}
+html body .dash-container .dash-content .dash-body .div-state .card-state .card-icone {
+  height: 3em;
+  width: 3em;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+html body .dash-container .dash-content .dash-body .div-state .card-state .card-icone svg {
+  stroke: white;
+}
+html body .dash-container .dash-content .dash-body .div-state .card-state .card-info {
+  width: 5em;
+  margin-left: 1.8em;
+}
+html body .dash-container .dash-content .dash-body .div-state .card-state .card-info h3 {
+  font-size: 35px;
+}
+html body .dash-container .dash-content .dash-body .div-state .card-state .card-info p {
+  font-size: 13px;
+  width: 8em;
+  color: #212121;
+}
+html body .dash-container .dash-content .dash-body .div-state .card-state:nth-child(1) .card-icone {
+  background-color: #01E86D;
+}
+html body .dash-container .dash-content .dash-body .div-state .card-state:nth-child(2) .card-icone {
+  background-color: #FFCF10;
+}
+html body .dash-container .dash-content .dash-body .div-state .card-state:nth-child(3) .card-icone {
+  background-color: #FF3910;
+}
+html body .dash-container .dash-content .dash-body .div-state .card-state:nth-child(3) .card-icone svg {
+  display: block;
+  height: 28px;
+  width: 28px;
+}
+html body .dash-container .dash-content .dash-body a {
+  text-decoration: none;
+  margin-top: 2em;
+  display: block;
+  width: 80%;
+}
+html body .dash-container .dash-content .dash-body .div-option {
+  height: 10em;
+}
+html body .dash-container .dash-content .dash-body .div-option .div-option-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2em;
+  background-color: #0E95DB;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+html body .dash-container .dash-content .dash-body .div-option .div-option-content h3 {
+  color: white;
+  font-size: 28px;
+  width: 10em;
+  text-shadow: -4px 39px 20px rgba(121, 121, 121, 0.6);
+}
+html body .dash-container .dash-content .dash-body .div-option .div-option-content .div-img {
+  height: 10em;
+  width: 10em;
+}
+html body .dash-container .dash-content .dash-body .div-option .div-option-content .div-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*# sourceMappingURL=dash.css.map */

@@ -1,0 +1,41 @@
+.barreNotif{
+    z-index: 4;
+    position: absolute;
+    width: 25em;
+    border-radius: 10px;
+    background-color: #ffffff;
+    left:53%;
+    top: 3em;
+    box-shadow: 0px 0px 5px #616161;
+    transform: translateX(-10em);
+    opacity: 0;
+    transition: all 0.4s ease-in-out;
+}
+.barreNotifContent{
+    display: flex;
+    padding: 0.9em;
+    justify-content: space-between;
+    align-items: center;
+}
+.barreNotif .barreNotifContent span{
+    background-color: #00da5d;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    padding: 0.1em;
+}
+.barreNotif .barreNotifContent span svg{
+    stroke: white;
+}
+.barreNotif .barreNotifContent svg:nth-child(3){
+    stroke: #5a5a5a;
+    cursor: pointer;
+}
+.barreNotif .barreNotifContent svg:nth-child(3):hover{
+    stroke: #ff1a1a;
+}
+.notifVisible{
+    opacity: 1;
+    transform: translateX(0);
+    transition: all .8s ease-in-out;
+}

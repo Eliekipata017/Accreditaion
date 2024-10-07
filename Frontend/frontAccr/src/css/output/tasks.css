@@ -1,0 +1,371 @@
+body {
+  transition: all 0.3s ease-in-out;
+}
+
+.body-visible:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  background-color: rgba(30, 30, 30, 0.75);
+  width: 100%;
+  z-index: 1;
+  height: 100vh;
+}
+.body-visible .card-details {
+  display: block !important;
+}
+
+.div-tasks {
+  height: 100%;
+}
+.div-tasks .div-task-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1em;
+}
+.div-tasks .div-task-title h3 {
+  font-size: 35px;
+  color: #2C2B2B;
+}
+.div-tasks .div-task-title h5 {
+  color: #2C2B2B;
+}
+.div-tasks .div-task-title .div-filter {
+  display: flex;
+  align-items: center;
+}
+.div-tasks .div-task-title .div-filter select {
+  border: none;
+  border-radius: 5px;
+  padding: 0.5em;
+  margin-left: 1em;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  border: 2px solid white;
+  width: 10em;
+}
+.div-tasks .div-task-title .div-filter select:focus {
+  border-color: #069BFF;
+}
+.div-tasks .div-task-title .div-filter input {
+  display: block;
+  width: 20em;
+  margin-right: 0.8em;
+  transition: all 0.3s ease-in-out;
+  border-radius: 5px;
+  text-indent: 0.8em;
+  outline: none;
+  border: 2px solid #ffffff;
+}
+.div-tasks .div-task-title .div-filter input:focus {
+  border-color: #069BFF;
+}
+.div-tasks .div-task-content {
+  height: 25em;
+  overflow: scroll;
+  width: 100%;
+  overflow-x: hidden;
+}
+.div-tasks .div-task-content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.div-tasks .div-task-content table thead tr td {
+  padding: 0 0 1em;
+  border-bottom: 1px solid #616161;
+  font-weight: 600;
+  color: #2C2B2B;
+}
+.div-tasks .div-task-content table tbody tr td {
+  padding: 1em 0 0.5em;
+  font-weight: 500;
+  color: #2C2B2B;
+}
+.div-tasks .div-task-content table tbody tr td span {
+  padding: 0.5em;
+  border-radius: 10px;
+  background-color: #9AEFD7;
+  text-transform: uppercase;
+  color: #00674B;
+  font-size: 14px;
+  font-weight: bold;
+}
+.div-tasks .div-task-content table tbody tr td .encours {
+  padding: 0.5em;
+  border-radius: 10px;
+  background-color: #efae9a;
+  text-transform: uppercase;
+  color: #672700;
+  font-size: 14px;
+  font-weight: bold;
+}
+.div-tasks .div-task-content table tbody tr td .nonTraite {
+  padding: 0.5em;
+  border-radius: 10px;
+  background-color: #fa8383;
+  text-transform: uppercase;
+  color: #620000;
+  font-size: 14px;
+  font-weight: bold;
+}
+.div-tasks .div-task-content table tbody tr td button {
+  width: 100%;
+  border: none;
+  background-color: #0A85FF;
+  color: white;
+  border-radius: 10px;
+  padding: 0.5em;
+  cursor: pointer;
+}
+.div-tasks .card-details {
+  position: absolute;
+  width: 35em;
+  background-color: #ffffff;
+  z-index: 2;
+  border-radius: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  display: none;
+  padding: 2em;
+  transition: all 0.3s ease-in-out;
+}
+
+.div-tasks .card-details .card-head {
+  display: flex;
+  justify-content: space-between;
+}
+.div-tasks .card-details .card-head span {
+  display: block;
+  padding: 0.8em;
+  background-color: red;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.div-tasks .card-details .content-desc .statut{
+  padding: 0.4em;
+  text-align: center;
+  width: 10em;
+  background-color: #ff7474;
+  color: #430000;
+  font-weight: bold;
+  margin-top: 0.8em;
+  border-radius: 3px;
+}
+.div-tasks .card-details {
+
+}
+.div-tasks .card-details .content-desc .nonEncours{
+  padding: 0.4em;
+  text-align: center;
+  width: 10em;
+  background-color: #ff7474;
+  color: #430000;
+  font-weight: bold;
+  margin-top: 0.8em;
+  border-radius: 3px;
+}
+.div-tasks .card-details .content-desc .enCours{
+  padding: 0.4em;
+  text-align: center;
+  width: 10em;
+  background-color: #ffa870;
+  color: #562501;
+  font-weight: bold;
+  margin-top: 0.8em;
+  border-radius: 3px;
+}
+.div-tasks .card-details .content-desc .termine{
+  padding: 0.4em;
+  text-align: center;
+  width: 10em;
+  background-color: #70ffae;
+  color: #015623;
+  font-weight: bold;
+  margin-top: 0.8em;
+  border-radius: 3px;
+}
+.div-tasks .card-details .card-content .content-desc h4 {
+  margin-top: 0.8em;
+}
+.div-tasks .card-details .card-content .content-desc ul {
+  margin-left: 2em;
+}
+.div-tasks .card-details .card-content .div-affect {
+  display: flex;
+  align-items: center;
+  margin-top: 0.8em;
+}
+.div-tasks .card-details .card-content .div-affect .div-agent-list {
+  background-color: #ededed;
+  position: absolute;
+  height: 15em;
+  top: 0;
+  padding: 1em;
+  width: 25em;
+  z-index: 4;
+  border-radius: 5px;
+  overflow-y: scroll;
+  left: 2em;
+  top: 3em;
+  visibility: hidden;
+}
+
+.div-tasks .card-details .card-content .div-delete {
+  display: flex;
+  align-items: center;
+  margin-top: 0.8em;
+}
+
+.div-tasks .card-details .card-content .div-delete .div-agent-list-delete {
+  padding: 5em;
+}
+.div-tasks .card-details .card-content .div-affect .div-agent-list input[type=text],
+.div-tasks .card-details .card-content .div-delete .div-agent-list-delete input[type=text]{
+  border: none;
+  text-indent: 0.8em;
+  width: 100%;
+  padding: 0.6em;
+  margin-bottom: 0.8em;
+  border-radius: 3px;
+
+}
+.div-tasks .card-details .card-content .div-affect .div-agent-list button,
+.div-tasks .card-details .card-content .div-affect .div-agent-list-delete button{
+  padding: 0.5em;
+  background-color: #0071df;
+  border-radius:0.3em ;
+  border: none;
+  color: white;
+  margin-top: 0.8em;
+  width: 10em;
+  cursor: pointer;
+}
+.div-tasks .card-details .card-content .div-affect .div-agent-list .annuler,
+.div-tasks .card-details .card-content .div-affect .div-agent-list-delete .annuler{
+  padding: 0.5em;
+  background-color: #ff0a60;
+  border-radius:0.3em ;
+  border: none;
+  color: white;
+  margin-top: 0.8em;
+  width: 10em;
+}
+.div-tasks .card-details .card-content .div-affect .div-agent-list label,
+.div-tasks .card-details .card-content .div-affect .div-agent-list-delete label{
+  margin-left: 0.8em;
+}
+.div-tasks .card-details .card-content .div-affect .div-agent-list-visible {
+  visibility: visible;
+}
+.div-tasks .card-details .card-content .div-affect .div-agent-list-visible-delete {
+  visibility: visible;
+}
+.card-details .card-content .content-desc .heureState {
+  display: flex;
+  align-items: center;
+}
+.card-details .card-content .content-desc .heureState h3 {
+  font-size: 15px;
+  margin-top: 0.8em;
+  margin-left: 0.8em;
+}
+.card-details .card-content .content-desc ul form input[type=submit]{
+  padding: 0.3em;
+  border: none;
+  background-color: #f62e2e;
+  color: white;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.card-details .card-content .content-desc ul form .div-content-form .agent-div label{
+  margin-left: 0.8em;
+}
+.div-tasks .card-details .card-content .div-affect select {
+  padding: 0.8em;
+  border-radius: 3px;
+  width: 40%;
+}
+.div-tasks .card-details .card-content .div-affect input[type=submit] {
+  padding: 0.8em;
+  border-radius: 3px;
+  width: 40%;
+  margin-left: 1em;
+  border: none;
+  background-color: #0A85FF;
+  color: white;
+  cursor: pointer;
+}
+.div-tasks .card-details h3 {
+  color: #2C2B2B;
+}
+/*
+  skills
+*/
+.dash-content .skills-content {
+  height: 100%;
+}
+.dash-content .skills-content .skills-tittle h3 {
+  font-size: 25px;
+  margin-top: 2em;
+  font-weight: 500;
+}
+.dash-content .skills-content .skills-tittle select{
+  padding: 0.5em;
+  border: none;
+  border-radius: 3px;
+  outline: none;
+  font-size: 14px;
+}
+.dash-content .skills-content .card-skills {
+  margin-top: 2em;
+}
+.dash-content .skills-content .card-skills .skills-header {
+  display: flex;
+  align-items: center;
+}
+.dash-content .skills-content .card-skills .skills-header .profile {
+  height: 8em;
+  width: 8em;
+}
+.dash-content .skills-content .card-skills .skills-header .profile img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.dash-content .skills-content .card-skills .skills-header h3 {
+  font-weight: 500;
+  font-size: 30px;
+  margin-left: 2em;
+}
+.dash-content .skills-content .card-skills .skills-content .info table {
+  width: 50%;
+  margin-top: 1em;
+}
+
+.dash-content .skills-content .card-skills .skills-content .info table tr td span {
+  display: block;
+  background-color: #9AEFD7;
+  color: #00674B;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  width: 2em;
+}
+.dash-content .skills-content .card-skills .skills-content .info table tr td  .red {
+  background-color: #f88e8e;
+  color: #ae0000;
+}
+.dash-content .skills-content .card-skills .skills-content .info table tr td  .orange {
+  background-color: #f8c78e;
+  color: #a25c00;
+}
+.dash-content .skills-content .card-skills .skills-content .info table tr td  .bleu {
+  background-color: #7fc8fb;
+  color: #0059a2;
+}
+
+/*# sourceMappingURL=tasks.css.map */
