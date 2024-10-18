@@ -1,42 +1,83 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Poppins;
+}
+html body{
+    height: 100vh;
+    width: 100vw;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+html body .d-form-eval{
+    height: 100vh;
+    width: 100vw;
+    background-color: #f3f3f3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+html body .d-form-eval .d-form,
+html body .d-form-eval .d-head-eval{
+    background-color: white;
+    height: 70%;
+    width: 50%;
+    padding: 0.9em;
+}
+html body .d-form-eval .d-head-eval{
+    margin-bottom: 0.9em;
+    height: 4em;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+html body .d-form-eval .d-head-eval h2 span{
+    color: #0A85FF;
 }
 
-.card {
-  padding: 2em;
+html body .d-form-eval .d-form{
+    overflow-y: scroll;
 }
 
-.read-the-docs {
-  color: #888;
+html body .d-form-eval  button{
+    border: none;
+    padding: 0.5em;
+    cursor: pointer;
+    width: 8em;
+    background-color: #98ffc2;
+    border-radius: 5px;margin-top: 0.8em;
+}
+
+html body .d-form-eval .d-form form .d-critere{
+    display: flex;
+    justify-content: space-between;
+}
+html body .d-form-eval .d-form form .d-critere div{
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+html body .d-form-eval .d-form form .d-critere div label{
+    margin-left: .8em;
+}
+
+html body .d-form-eval .d-form form .l-title{
+    display: block;
+    margin-bottom: .5em;
+    margin-top: .5em;
+    font-weight: 600;
+    margin-left: 0.8em;
+}
+
+html body .d-form-eval .d-form form input[type=submit]{
+    padding: 0.5em;
+    border: none;
+    margin-top: .8em;
+    width: 10em;
+    cursor: pointer;
+    background-color: #0A85FF;
+    color: white;
+    border-radius: 3px;
 }

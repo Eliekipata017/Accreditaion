@@ -7,21 +7,53 @@ import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {SideInspecteur} from "./sideBarre.jsx";
+import axios from "axios";
 
 
 export const Dashboard =  ()  => {
     const userId = localStorage.getItem("User")
     const navigate = useNavigate()
-    if (!(userId)){
-        navigate("/")
+    const [dmd, setDmd] = useState(false)
+
+    const [dmdNonEncours, setDmdNonEncours] = useState(false)
+    const [dmdEnCours, setDmdEnCours] = useState(false)
+    const [dmdFinis, setDmdFinis] = useState(false)
+
+
+    const fetchData = async ()=>{
+        const demandes = await axios.get('http://localhost:3000/getDemandes')
+        const array_dmd = demandes.data
+        setDmd(array_dmd)
+
     }
+
+    useEffect( ()=>{
+        try {
+            fetchData()
+        }catch (e) {
+            alert(e)
+        }
+    },[])
+
+    useEffect(() => {
+        console.log(dmd)
+        if (dmd){
+            const DnonNenCours = dmd.filter((dm)=> dm.statut == 0)
+            const DnonEncours = dmd.filter((dm)=> dm.statut == 1)
+            const DFinis = dmd.filter((dm)=> dm.statut == 2)
+            setDmdNonEncours(DnonNenCours)
+            setDmdEnCours(DnonEncours)
+            setDmdFinis(DFinis)
+        }
+    }, [dmd]);
+
     const Filters = ()=>{
 
     }
 
     const states = [
         {
-            number : 5,
+            number : dmdFinis && dmdFinis.length,
             name : "Taches terminées",
             svg : <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-chart-area-line"
                        width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none"
@@ -33,7 +65,7 @@ export const Dashboard =  ()  => {
 
         },
         {
-            number : 0,
+            number : dmdEnCours && dmdEnCours.length,
             name : "Taches en cours",
             svg : <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-chart-area-line"
                        width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none"
@@ -44,7 +76,7 @@ export const Dashboard =  ()  => {
             </svg>
         },
         {
-            number : 3,
+            number : dmdNonEncours && dmdNonEncours.length,
             name : "Taches non traitées",
             svg : <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-chart-area-line"
                        width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none"

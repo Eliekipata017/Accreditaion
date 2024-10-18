@@ -1,14 +1,97 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql" // Adjust to your database provider
   url      = env("DATABASE_URL")
+}
+
+
+model Chef_Etablissement {
+  id_chef         Int              @id @default(autoincrement())
+  nom             String
+  email           String
+  etablissements  Etablissement[]
+}
+model Critere {
+  id_critere     Int             @id @default(autoincrement())
+  nom_critere    String
+  type_critere   String
+}
+model Demande {
+  id_demande            Int             @id @default(autoincrement())
+  date_demande          DateTime
+  nom_etablissement     String
+  adresse               String
+  type_etablissement    String
+  statut                Int
+  inspection            Inspection?     @relation(fields: [id_inspection], references: [id_inspection])
+  id_inspection         Int?
+  email                 String
+  nom                   String
+}
+model Etablissement {
+  id_etablissement    Int             @id @default(autoincrement())
+  nom_etablissement   String
+  type_etablissement  String
+  adresse             String
+  chef                Chef_Etablissement @relation(fields: [chefId], references: [id_chef])
+  chefId              Int
+  paiements           Paiement[]
+  inspections         Inspection[]
+}
+model Inspecteur {
+  id_inspecteur   Int                 @id @default(autoincrement())
+  nom             String
+  prenom          String
+  statut          Int
+  inspections     inspectionInspecteur[]
+}
+
+model Inspection {
+  id_inspection   Int                 @id @default(autoincrement())
+  date_inspection DateTime
+  type_inspection String
+  statut          String
+  id_etablissement Int
+  etablissement   Etablissement       @relation(fields: [id_etablissement], references: [id_etablissement])
+  id_directeur    Int?
+  directeur       Directeur_General?  @relation("DirecteurGeneralInspections", fields: [id_directeur], references: [id_directeur])
+  demandes        Demande[]
+  evaluations     Evaluation[]
+  inspecteurs     inspectionInspecteur[]
+}
+
+model inspectionInspecteur {
+  id             Int         @id @default(autoincrement())
+  inspection     Inspection  @relation(fields: [inspectionId], references: [id_inspection])
+  inspectionId   Int
+  inspecteur     Inspecteur  @relation(fields: [inspecteurId], references: [id_inspecteur])
+  inspecteurId   Int
+}
+
+model Evaluation {
+  id_evaluation   Int             @id @default(autoincrement())
+  note            Int
+  observation     String
+  recommandation  String
+  id_inspection   Int
+  inspection      Inspection      @relation(fields: [id_inspection], references: [id_inspection])
+}
+model Paiement {
+  id_paiement     Int             @id @default(autoincrement())
+  montant         Decimal
+  statut          String
+  date_paiement   DateTime
+  id_etablissement Int
+  etablissement   Etablissement   @relation(fields: [id_etablissement], references: [id_etablissement])
+}
+model Directeur_General {
+  id_directeur      Int             @id @default(autoincrement())
+  nom               String
+  prenom            String
+  statut            String
+  date_accreditation DateTime
+  inspections       Inspection[]    @relation("DirecteurGeneralInspections") // Relation correcte pour gérer les inspections supervisées
 }

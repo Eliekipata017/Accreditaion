@@ -1,34 +1,64 @@
 import {useForm} from "react-hook-form";
 import Inputs from "./components/Forms/inputs.jsx";
+import {Select} from "./components/Forms/select.jsx";
+import axios from "axios";
+import {useEffect, useState} from "react";
 
 export const DmdAccreditation = () => {
     const {register, handleSubmit} = useForm()
+    const [notif, setNotif] = useState(false)
+
+    useEffect(()=>{
+        if (notif){
+            alert(notif)
+            setNotif(false)
+        }
+    },[notif])
+    const Options = [
+        {
+            value : "dispensaire",
+            option : "dispensaire"
+        },
+        {
+            value : "clinique",
+            option : "Clinique"
+        }
+    ]
+    const onSubmit = async (data)=>{
+        try {
+            const object_obj = await axios.post('http://localhost:3000/demande',data)
+            setNotif(object_obj.data.message)
+            console.log(object_obj)
+        }catch (e) {
+            console.log(e)
+        }
+    }
     return (
         <div className={"container"}>
             <div className={"div-content"}>
                 <div className={"div-form"}>
-                    <form  method="post" className={"form-submit"} >
+                    <form  onSubmit={handleSubmit(onSubmit)} className={"form-submit"} >
                         <h3>Demandez <br/>
                             <span>une accréditation</span></h3>
                         <div className={"div-1"}>
                             <div className={"div-input"}>
-                                <Inputs name={"eli"} register={register} placeholder={"Nom etablissement"}/>
+                                <Inputs name={"nom_etablissement"} register={register} placeholder={"Nom etablissement"}/>
                             </div>
                             <div className={"div-input"}>
-                                <Inputs name={"eli"} register={register} placeholder={"Adresse etablissement"}/>
+                                <Inputs name={"adresse"} register={register} placeholder={"Adresse etablissement"}/>
                             </div>
                         </div>
                         <div className={"div-1"} style={{width:"100%", gridTemplateColumns:'repeat(2,1fr)',marginTop:'0.8em'}}>
                             <div className={"div-input"} style={{width:"100%"}}>
-                                <Inputs name={"eli"} register={register} placeholder={"Type etablissement"}/>
+                                <Select name={"type_etablissement"} register={register} options={Options}/>
                             </div>
                             <div className={"div-input"} style={{width:"100%"}}>
-                                <Inputs name={"eli"} register={register} placeholder={"Email responsable"}/>
+                                <Inputs name={"email"} register={register} placeholder={"Email responsable"}/>
                             </div>
                         </div>
                         <div className={"div-2"}>
                             <div className={"div-input"} style={{width:"60%"}}>
-                                <Inputs name={"eli"} register={register} placeholder={"Nom responsable"}/>
+                                <Inputs name={"nom_responsable"} register={register} placeholder={"Nom responsable"}/>
                             </div>
                         </div>
 

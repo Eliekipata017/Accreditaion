@@ -5,6 +5,7 @@ import {Login} from "./login.jsx";
 import {DmdAccreditation} from "./soumettreAccre.jsx";
 import {Dashboard} from "./Inspecteur/dashboard.jsx";
 import {Demandes} from "./Inspecteur/demandes.jsx";
+import {Evaluation} from "./Inspecteur/evaluation.jsx";
 
 
 const router = createBrowserRouter([
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
     {
         path: "/demandes",
         element: <Demandes/>,
+    },
+    {
+        path: "/evaluation",
+        element: <Evaluation/>,
     },
 ]);
 

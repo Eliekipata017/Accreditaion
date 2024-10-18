@@ -6,13 +6,22 @@ import Inputs from "./components/Forms/inputs.jsx";
 import {useForm} from "react-hook-form";
 
 export const Login = () => {
-    const { register, handleSubmit } = useForm();
-
+    const userId = localStorage.getItem("userId")
     const navigate = useNavigate()
 
+    if (userId){
+        navigate('/')
+    }
+    const { register, handleSubmit } = useForm();
 
-    const onSubmit = (data)=>{
+    const onSubmit = async (data)=>{
 
+        try {
+            const object_rep = await axios.post("http://localhost:30001/",data)
+
+        }catch (e) {
+
+        }
     }
     return (
         <>
