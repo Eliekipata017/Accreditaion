@@ -38,15 +38,13 @@ model Etablissement {
   adresse             String
   chef                Chef_Etablissement @relation(fields: [chefId], references: [id_chef])
   chefId              Int
-  paiements           Paiement[]
-  inspections         Inspection[]
 }
 model Inspecteur {
   id_inspecteur   Int                 @id @default(autoincrement())
   nom             String
-  prenom          String
-  statut          Int
   inspections     inspectionInspecteur[]
+  type             Int
+  compte          Compte?
 }
 
 model Inspection {
@@ -54,8 +52,6 @@ model Inspection {
   date_inspection DateTime
   type_inspection String
   statut          String
-  id_etablissement Int
-  etablissement   Etablissement       @relation(fields: [id_etablissement], references: [id_etablissement])
   id_directeur    Int?
   directeur       Directeur_General?  @relation("DirecteurGeneralInspections", fields: [id_directeur], references: [id_directeur])
   demandes        Demande[]
@@ -79,19 +75,29 @@ model Evaluation {
   id_inspection   Int
   inspection      Inspection      @relation(fields: [id_inspection], references: [id_inspection])
 }
-model Paiement {
-  id_paiement     Int             @id @default(autoincrement())
-  montant         Decimal
-  statut          String
-  date_paiement   DateTime
-  id_etablissement Int
-  etablissement   Etablissement   @relation(fields: [id_etablissement], references: [id_etablissement])
-}
+
 model Directeur_General {
   id_directeur      Int             @id @default(autoincrement())
   nom               String
-  prenom            String
-  statut            String
-  date_accreditation DateTime
   inspections       Inspection[]    @relation("DirecteurGeneralInspections") // Relation correcte pour gérer les inspections supervisées
+  compte            Compte?
+}
+
+model Compte {
+  id                    Int             @id @default(autoincrement())
+  email                 String
+  password              String
+  directeurGeneralId    Int?                @unique // Ajoute @unique ici
+  directeur_general     Directeur_General?  @relation(fields: [directeurGeneralId], references: [id_directeur])
+  inspecteurId          Int?                @unique // Ajoute @unique ici
+  inspecteur            Inspecteur?         @relation(fields: [inspecteurId], references: [id_inspecteur])
+  idAdmin               Int?                @unique
+  admin                 Admin?              @relation(fields: [idAdmin], references: [id])
+  role                  String
+}
+
+model Admin {
+    id                Int       @id @default(autoincrement())
+    nom               String
+    compte            Compte?
 }

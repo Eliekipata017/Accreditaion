@@ -6,12 +6,12 @@ import cours from "../img/demande-de-citation.png"
 import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
-import {SideInspecteur} from "./sideBarre.jsx";
+import {SideInsPector} from "./sideInsPector.jsx";
 import axios from "axios";
 
 
-export const Dashboard =  ()  => {
-    const userId = localStorage.getItem("User")
+export const DashboardInsp =  ()  => {
+    const userId = localStorage.getItem("inspUser")
     const navigate = useNavigate()
     const [dmd, setDmd] = useState(false)
 
@@ -21,13 +21,15 @@ export const Dashboard =  ()  => {
 
 
     const fetchData = async ()=>{
-        const demandes = await axios.get('http://localhost:3000/getDemandes')
-        const array_dmd = demandes.data
+        const demandes = await axios.post('http://localhost:3000/getinsp', {id : userId})
+        const array_dmd = demandes.data.data
         setDmd(array_dmd)
-
     }
 
     useEffect( ()=>{
+        if (!(userId)){
+            navigate("/")
+        }
         try {
             fetchData()
         }catch (e) {
@@ -38,12 +40,23 @@ export const Dashboard =  ()  => {
     useEffect(() => {
         console.log(dmd)
         if (dmd){
-            const DnonNenCours = dmd.filter((dm)=> dm.statut == 0)
-            const DnonEncours = dmd.filter((dm)=> dm.statut == 1)
-            const DFinis = dmd.filter((dm)=> dm.statut == 2)
-            setDmdNonEncours(DnonNenCours)
-            setDmdEnCours(DnonEncours)
-            setDmdFinis(DFinis)
+            console.log(dmd)
+            if (dmd.inspections.length == 0){
+                setDmdNonEncours([])
+                setDmdEnCours([])
+                setDmdFinis([])
+            }else{
+                console.log(dmd)
+
+                 const DnonNenCours = dmd.inspections.filter((d)=> d.inspection.statut == "0")
+                 const DnonEncours = dmd.inspections.filter((d)=> d.inspection.statut == "1")
+                 const DFinis = dmd.inspections.filter((d)=> d.inspection.statut == "2")
+
+                setDmdNonEncours(DnonNenCours)
+                setDmdEnCours(DnonEncours)
+                setDmdFinis(DFinis)
+            }
+
         }
     }, [dmd]);
 
@@ -88,10 +101,11 @@ export const Dashboard =  ()  => {
         }
     ]
 
-    const textOption = {href: "/inspecteur/generale/demandes", text:'Gerer les demandes'}
+
+    const textOption = {href: "/employe/soumettre", text:'Gerer les demandes'}
     return (
         <div className={"dash-container"}>
-            <SideInspecteur/>
+            <SideInsPector/>
             <div className={"dash-content"}>
                 <div className={"text-title"}>
                     <h3>Bienvenue <br/>

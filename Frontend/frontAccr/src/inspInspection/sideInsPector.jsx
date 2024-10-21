@@ -1,6 +1,6 @@
 import {SideBarre} from "../components/dashboard/sideBarre.jsx";
 
-export const SideInspecteur = () => {
+export const SideInsPector = () => {
     const links = [
         {
             link : "Dashboard",
@@ -13,10 +13,10 @@ export const SideInspecteur = () => {
                 <path d="M14 12h6v8h-6z"/>
                 <path d="M14 4h6v4h-6z"/>
             </svg>,
-            href: "/inspecteur/generale/dashboard"
+            href: "/inspecteur/dashboard"
         },
         {
-            link : "Gerer les demandes",
+            link : "Inspections",
             svg : <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-clipboard-x"
                        width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none"
                        stroke-linecap="round" stroke-linejoin="round">
@@ -25,11 +25,12 @@ export const SideInspecteur = () => {
                 <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"/>
                 <path d="M10 12l4 4m0 -4l-4 4"/>
             </svg>,
-            href: "/inspecteur/generale/demandes"
-        },
+            href : "/inspecteur/inspections"
+        }
     ]
-
     return (
-        <SideBarre links={links}/>
+        <>
+            <SideBarre links={links}/>
+        </>
     )
 }

@@ -4,9 +4,10 @@ import "./css/output/style.css"
 import {Link, useNavigate} from "react-router-dom";
 import Inputs from "./components/Forms/inputs.jsx";
 import {useForm} from "react-hook-form";
+import axios from "axios";
 
 export const Login = () => {
-    const userId = localStorage.getItem("userId")
+    const userId = localStorage.getItem("adminUser")
     const navigate = useNavigate()
 
     if (userId){
@@ -15,12 +16,30 @@ export const Login = () => {
     const { register, handleSubmit } = useForm();
 
     const onSubmit = async (data)=>{
-
         try {
-            const object_rep = await axios.post("http://localhost:30001/",data)
+            const response = await axios.post("http://localhost:3000/connexion",data)
+            if (response.data.error){
+                console.log(response)
+            }else{
+                if (response.data.data.role == "admin"){
+                    localStorage.setItem("adminUser",response.data.data.idAdmin)
+                    alert('connexion reussie')
+                    navigate("/admin/creerCompte")
+                }else if (response.data.data.role == "insp"){
+                    localStorage.setItem("inspUser",response.data.data.inspecteurId)
+                    navigate("/inspecteur/dashboard")
+                }else if (response.data.data.role == "inspGen"){
+                    localStorage.setItem("inspGen",response.data.data.id_inspecteur)
+                    navigate("/inspecteur/generale/dashboard")
+                }
+                else{
+                    localStorage.setItem("dirGUser",response.data.data.idAdmin)
+                    navigate("/admin/creerCompte")
+                }
+            }
 
         }catch (e) {
-
+            console.log(e)
         }
     }
     return (
