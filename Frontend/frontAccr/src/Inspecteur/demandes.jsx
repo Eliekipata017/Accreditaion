@@ -5,14 +5,22 @@ import {Cardstate} from "../components/dashboard/cardstate.jsx";
 import {Cardoption} from "../components/dashboard/cardoption.jsx";
 import cours from "../img/demande-de-citation.png";
 import {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
-import {dataForma} from "../hooks/utils.js";
+import {dataForma, reset} from "../hooks/utils.js";
 import Inputs from "../components/Forms/inputs.jsx";
 import {useForm} from "react-hook-form";
 
 
 export const Demandes = () => {
+
+    const userId = localStorage.getItem("inspGen")
+    const navigate = useNavigate()
+
+    if (!(userId) || userId == "undefined"){
+        navigate('/')
+    }
+
     const [visible,setVisible] = useState(false)
     const [detailsDmd,setDetailsDmd] = useState(false)
     const [inspecteur,setInspecteur] = useState(false)
@@ -44,13 +52,19 @@ export const Demandes = () => {
                 }
             }
         }
-        const Ndata = {...data, inspecteurs : inspData,demande:parseInt(idDmd),type_inspection:"e"}
+        const Ndata = {...data, inspecteurs : inspData,demande:parseInt(idDmd),type_inspection:"demande"}
         try {
             const response = await axios.post('http://localhost:3000/ajouterInspection',Ndata)
-            console.log(response.data.Success)
+            console.log(response.data)
+            if (response.data.Success){
+                alert(response.data.Success)
+            }else{
+                alert(response.data.Error)
+            }
         }catch (e) {
-            console.log(e)
+            alert(e.message)
         }
+        reset()
     }
 
     useEffect( ()=>{
@@ -115,7 +129,7 @@ export const Demandes = () => {
                                                 <td>{dm.nom}</td>
                                                 <td>{dm.email}</td>
                                                 <td><span>{dm.inspection == null ? 0: dm.inspection.evaluations.length }/2</span></td>
-                                                <td><span>{dm.statut == 0 ? <span>NON ENCOURS</span> : dm.statut == 1 ?
+                                                <td><span>{dm.statut == 0 ? <span>NON ENCOURS</span> : dm.statut == 1 || dm.statut == 2 ?
                                                 <span>EN COURS</span> : <span>TERMINE</span>}</span>
                                                 </td>
                                                 <td>
@@ -132,68 +146,12 @@ export const Demandes = () => {
                                 <span onClick={close}></span>
                             </div>
                             <div className={"d-card-body"}>
-                                <div className={"d-list"}>
-                                    <form onSubmit={handleSubmit(submittAffect)}>
-                                        {
-                                            detailsDmd && <h5>{dataForma(detailsDmd[0].date_demande)}</h5>
-                                        }
-                                        {
-                                            detailsDmd && detailsDmd[0].statut == 0 &&
-                                                <div className={""}>
-                                                    <h4>Affecter inspecteur</h4>
-                                                    <form onSubmit={handleClick}>
-                                                        <div className={"d-ins"}>
-                                                            {
-                                                                inspecteur.map((insp,i)=> <li key={i}>
-                                                                    <input type="checkbox"
-                                                                    value={insp.id_inspecteur} name={"list"+i}
-                                                                           {...register("list"+i)} id={i}/>
-
-                                                                    <label htmlFor={i}>{insp.nom}</label>
-                                                                </li>)
-                                                            }
-                                                        </div>
-                                                        <Inputs register={register}
-                                                        type={"date"} name={"dateInsp"} placeholder={""}/>
-                                                    </form>
-                                                </div>
-                                        }
-                                        {
-                                            detailsDmd && detailsDmd[0].statut == 1 &&
-                                            <div className={""}>
-
-                                                {
-                                                    detailsDmd[0].inspection.evaluations != null && detailsDmd[0].inspection.evaluations.length == 1 ?
-                                                        <div>
-                                                            <h4>Affecter inspecteur</h4>
-                                                            <h3>Resultat 1
-                                                                : {detailsDmd[0].inspection.evaluations[0].note}/15</h3>
-                                                            <form onSubmit={handleClick}>
-                                                                <div className={"d-ins"}>
-                                                                    {
-                                                                        inspecteur.map((insp, i) => <li key={i}>
-                                                                            <input type="checkbox"
-                                                                                   value={insp.id_inspecteur}
-                                                                                   name={"list" + i}
-                                                                                   {...register("list" + i)} id={i}/>
-
-                                                                            <label htmlFor={i}>{insp.nom}</label>
-                                                                        </li>)
-                                                                    }
-                                                                </div>
-                                                                <Inputs register={register}
-                                                                        type={"date"} name={"dateInsp"}
-                                                                        placeholder={""}/>
-                                                            </form>
-                                                        </div>
-                                                        : <h1>Resultat 1
-                                                            : {detailsDmd[0].inspection.evaluations[1].note}/15</h1>
-                                                }
-                                            </div>
-                                        }
-                                        <input type="submit" value={"Envoyer"}/>
-                                    </form>
-                                </div>
+                                {
+                                    detailsDmd && <h4>Demande soumis le {dataForma(detailsDmd[0].date_demande)}</h4>
+                                }
+                                {
+                                    console.log(detailsDmd)
+                                }
                             </div>
                         </div>
                     </div>

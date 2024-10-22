@@ -52,7 +52,7 @@ app.post('/creercompte', async (req,res)=>{
                 password : password
             }
         })
-        console.log(cpt)
+
         if (cpt){
             return res.json({"error": "le compte existe deja !!!"})
         }
@@ -69,7 +69,7 @@ app.post('/creercompte', async (req,res)=>{
                     id_inspecteur: 'desc' // ou un autre champ de date
                 }
             });
-            id = lastInspecteur.id
+            id = lastInspecteur.id_inspecteur
 
             const comptes = await prisma.compte.create({
                 data :{
@@ -120,7 +120,7 @@ app.post('/creercompte', async (req,res)=>{
                 }
             })
 
-            id = dirG.id
+            id = dirG.id_directeur
             const comptes = await prisma.compte.create({
                 data :{
                     email : email,
@@ -327,7 +327,6 @@ app.post('/evaluation', async (req, res) => {
 });
 app.post('/ajouterInspection', async (req, res) => {
     const { type_inspection, demande, inspecteurs, dateInsp } = req.body;
-    console.log(inspecteurs);
 
     try {
         const nouvelleInspection = await prisma.inspection.create({
@@ -373,7 +372,7 @@ app.post('/ajouterInspection', async (req, res) => {
                 id_demande : demande
             },
             data :{
-                statut : 2
+                statut : dmd.statut == 1 ? 2 : 1
             }
         })
         const optionDmd  = {
@@ -390,10 +389,7 @@ app.post('/ajouterInspection', async (req, res) => {
         }
         return res.json({ Success: "La demande a été ajoutée avec succès" });
 
-
-
     } catch (error) {
-        console.log(error);
         return res.json({ Error: "Erreur : " + error });
     }
 });
@@ -602,7 +598,6 @@ app.post('/getCritere',async (req,res)=>{
     return res.json({data:critere})
 })
 
-
 app.get('/getInspections', async (req,res)=>{
     const inspecteur = await  prisma.inspecteur.findMany()
     try {
@@ -618,6 +613,16 @@ app.get('/getInspeceur', async (req,res)=>{
         }
     })
     return res.json({data : inspecteurs})
+})
+
+app.post(('/getInspecteur'), async (req,res)=>{
+    const {id} = req.body
+    const insp = await prisma.inspecteur.findFirst({
+        where :{
+            id_inspecteur : id
+        }
+    })
+    return res.json({data : insp})
 })
 
 // Démarrage du serveur

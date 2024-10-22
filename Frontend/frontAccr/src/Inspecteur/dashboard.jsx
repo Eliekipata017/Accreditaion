@@ -11,10 +11,14 @@ import axios from "axios";
 
 
 export const Dashboard =  ()  => {
-    const userId = localStorage.getItem("User")
+    const userId = localStorage.getItem("inspGen")
     const navigate = useNavigate()
-    const [dmd, setDmd] = useState(false)
 
+    if (!(userId) || userId == "undefined"){
+        navigate('/')
+    }
+    const [dmd, setDmd] = useState(false)
+    const [user, setUser] = useState(false)
     const [dmdNonEncours, setDmdNonEncours] = useState(false)
     const [dmdEnCours, setDmdEnCours] = useState(false)
     const [dmdFinis, setDmdFinis] = useState(false)
@@ -22,8 +26,12 @@ export const Dashboard =  ()  => {
 
     const fetchData = async ()=>{
         const demandes = await axios.get('http://localhost:3000/getDemandes')
+        const user = await axios.post(`http://localhost:3000/getInspecteur`, {id: parseInt(userId)})
+
         const array_dmd = demandes.data
+        const user_data = user.data.data
         setDmd(array_dmd)
+        setUser(user_data)
 
     }
 
@@ -36,7 +44,7 @@ export const Dashboard =  ()  => {
     },[])
 
     useEffect(() => {
-        console.log(dmd)
+
         if (dmd){
             const DnonNenCours = dmd.filter((dm)=> dm.statut == 0)
             const DnonEncours = dmd.filter((dm)=> dm.statut == 1)
@@ -95,7 +103,7 @@ export const Dashboard =  ()  => {
             <div className={"dash-content"}>
                 <div className={"text-title"}>
                     <h3>Bienvenue <br/>
-                        vous Mr. Mwadi Lumbi</h3>
+                        vous Mr. {user && user.nom}</h3>
                 </div>
                 <div className={"dash-body"}>
                     <div className={"div-state"}>

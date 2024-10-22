@@ -5,6 +5,9 @@ export const reset = ()=>{
     inputs.forEach((element)=>{
         if (element.getAttribute("type") != "submit"){
             element.value = ""
+            if (element.getAttribute('type') == "checkbox"){
+                element.checked = false
+            }
         }
     })
     selects.forEach((element)=>{
@@ -14,6 +17,7 @@ export const reset = ()=>{
         element.value = ""
     })
 }
+
 const options = {
     year: 'numeric',
     month: 'long', // Peut être 'numeric' ou 'short' pour un autre format

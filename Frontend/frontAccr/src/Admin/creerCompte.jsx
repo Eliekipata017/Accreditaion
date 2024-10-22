@@ -5,6 +5,7 @@ import axios from 'axios';
 import Inputs from '../components/Forms/inputs.jsx';
 import { Select } from '../components/Forms/select.jsx';
 import '../css/output/style.css';
+import {reset} from "../hooks/utils.js";
 
 export const CreerCompte = () => {
     const userId = localStorage.getItem("userId");
@@ -21,14 +22,16 @@ export const CreerCompte = () => {
     const onSubmit = async (data) => {
         try {
             const response = await axios.post("http://localhost:3000/creercompte", data);
+
             if (response.data.success) {
                 alert(response.data.success);
             }else{
                 alert(response.data.error)
             }
         } catch (e) {
-            console.error(e); // Log error for debugging
+            alert(e); // Log error for debugging
         }
+        reset()
     };
 
     return (

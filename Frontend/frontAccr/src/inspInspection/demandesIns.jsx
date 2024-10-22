@@ -5,7 +5,7 @@ import {Cardstate} from "../components/dashboard/cardstate.jsx";
 import {Cardoption} from "../components/dashboard/cardoption.jsx";
 import cours from "../img/demande-de-citation.png";
 import {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 import {dataForma} from "../hooks/utils.js";
 import Inputs from "../components/Forms/inputs.jsx";
@@ -13,8 +13,14 @@ import {useForm} from "react-hook-form";
 
 
 export const DemandesIns = () => {
-    const [visible,setVisible] = useState(false)
     const userId = localStorage.getItem("inspUser")
+    const navigate = useNavigate()
+
+    if (!(userId) || userId == "undefined"){
+        navigate('/')
+    }
+    const [visible,setVisible] = useState(false)
+
     const [detailsDmd,setDetailsDmd] = useState(false)
     const [inspecteur,setInspecteur] = useState(false)
     const [dmd, setDmd] = useState(false)

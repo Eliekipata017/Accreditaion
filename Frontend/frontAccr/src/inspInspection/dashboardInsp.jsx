@@ -13,8 +13,13 @@ import axios from "axios";
 export const DashboardInsp =  ()  => {
     const userId = localStorage.getItem("inspUser")
     const navigate = useNavigate()
+
+    if (!(userId) || userId == "undefined"){
+        navigate('/')
+    }
     const [dmd, setDmd] = useState(false)
 
+    const [user, setUser] = useState(false)
     const [dmdNonEncours, setDmdNonEncours] = useState(false)
     const [dmdEnCours, setDmdEnCours] = useState(false)
     const [dmdFinis, setDmdFinis] = useState(false)
@@ -22,8 +27,11 @@ export const DashboardInsp =  ()  => {
 
     const fetchData = async ()=>{
         const demandes = await axios.post('http://localhost:3000/getinsp', {id : userId})
+        const user = await axios.post(`http://localhost:3000/getInspecteur`, {id: parseInt(userId)})
         const array_dmd = demandes.data.data
+        const user_data = user.data.data
         setDmd(array_dmd)
+        setUser(user_data)
     }
 
     useEffect( ()=>{
@@ -33,7 +41,7 @@ export const DashboardInsp =  ()  => {
         try {
             fetchData()
         }catch (e) {
-            alert(e)
+            alert(e.message)
         }
     },[])
 
@@ -109,7 +117,7 @@ export const DashboardInsp =  ()  => {
             <div className={"dash-content"}>
                 <div className={"text-title"}>
                     <h3>Bienvenue <br/>
-                        vous Mr. Mwadi Lumbi</h3>
+                        vous Mr. {user && user.nom}</h3>
                 </div>
                 <div className={"dash-body"}>
                     <div className={"div-state"}>

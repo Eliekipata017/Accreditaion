@@ -3,10 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql" // Adjust to your database provider
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
-
 
 model Chef_Etablissement {
   id_chef         Int              @id @default(autoincrement())
@@ -14,11 +13,13 @@ model Chef_Etablissement {
   email           String
   etablissements  Etablissement[]
 }
+
 model Critere {
   id_critere     Int             @id @default(autoincrement())
   nom_critere    String
   type_critere   String
 }
+
 model Demande {
   id_demande            Int             @id @default(autoincrement())
   date_demande          DateTime
@@ -26,11 +27,11 @@ model Demande {
   adresse               String
   type_etablissement    String
   statut                Int
-  inspection            Inspection?     @relation(fields: [id_inspection], references: [id_inspection])
-  id_inspection         Int?
+  inspections           Inspection[]    // Relation un-à-plusieurs (demande liée à plusieurs inspections)
   email                 String
   nom                   String
 }
+
 model Etablissement {
   id_etablissement    Int             @id @default(autoincrement())
   nom_etablissement   String
@@ -39,12 +40,13 @@ model Etablissement {
   chef                Chef_Etablissement @relation(fields: [chefId], references: [id_chef])
   chefId              Int
 }
+
 model Inspecteur {
   id_inspecteur   Int                 @id @default(autoincrement())
   nom             String
   inspections     inspectionInspecteur[]
   type             Int
-  compte          Compte?
+  compte          Compte?              @relation("InspecteurCompte")  // Relation opposée ajoutée ici
 }
 
 model Inspection {
@@ -54,7 +56,8 @@ model Inspection {
   statut          String
   id_directeur    Int?
   directeur       Directeur_General?  @relation("DirecteurGeneralInspections", fields: [id_directeur], references: [id_directeur])
-  demandes        Demande[]
+  demandeId       Int                 // Lien vers la demande
+  demande         Demande             @relation(fields: [demandeId], references: [id_demande])
   evaluations     Evaluation[]
   inspecteurs     inspectionInspecteur[]
 }
@@ -79,25 +82,28 @@ model Evaluation {
 model Directeur_General {
   id_directeur      Int             @id @default(autoincrement())
   nom               String
-  inspections       Inspection[]    @relation("DirecteurGeneralInspections") // Relation correcte pour gérer les inspections supervisées
-  compte            Compte?
-}
-
-model Compte {
-  id                    Int             @id @default(autoincrement())
-  email                 String
-  password              String
-  directeurGeneralId    Int?                @unique // Ajoute @unique ici
-  directeur_general     Directeur_General?  @relation(fields: [directeurGeneralId], references: [id_directeur])
-  inspecteurId          Int?                @unique // Ajoute @unique ici
-  inspecteur            Inspecteur?         @relation(fields: [inspecteurId], references: [id_inspecteur])
-  idAdmin               Int?                @unique
-  admin                 Admin?              @relation(fields: [idAdmin], references: [id])
-  role                  String
+  prenom            String
+  statut            String
+  date_accreditation DateTime
+  inspections       Inspection[]    @relation("DirecteurGeneralInspections")
+  compte            Compte?         @relation("DirecteurCompte")  // Relation opposée ajoutée ici
 }
 
 model Admin {
-    id                Int       @id @default(autoincrement())
-    nom               String
-    compte            Compte?
+    id      Int             @id @default(autoincrement())
+    nom     String
+    compte  Compte?         @relation("admincompte")  // Relation opposée ajoutée ici
+}
+
+model Compte {
+  id                    Int                @id @default(autoincrement())
+  email                 String
+  password              String
+  directeur_general     Directeur_General? @relation("DirecteurCompte", fields: [directeurGeneralId], references: [id_directeur])
+  directeurGeneralId    Int? @unique
+  inspecteur            Inspecteur?         @relation("InspecteurCompte", fields: [inspecteurId], references: [id_inspecteur])
+  inspecteurId          Int? @unique
+  role                  String
+  idAdmin               Int? @unique
+  admin                 Admin?              @relation("admincompte", fields: [idAdmin], references: [id])
 }

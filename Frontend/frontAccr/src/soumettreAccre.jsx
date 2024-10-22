@@ -3,6 +3,7 @@ import Inputs from "./components/Forms/inputs.jsx";
 import {Select} from "./components/Forms/select.jsx";
 import axios from "axios";
 import {useEffect, useState} from "react";
+import {reset} from "./hooks/utils.js";
 
 export const DmdAccreditation = () => {
     const {register, handleSubmit} = useForm()
@@ -28,10 +29,10 @@ export const DmdAccreditation = () => {
         try {
             const object_obj = await axios.post('http://localhost:3000/demande',data)
             setNotif(object_obj.data.message)
-            console.log(object_obj)
         }catch (e) {
             console.log(e)
         }
+        reset()
     }
     return (
         <div className={"container"}>
