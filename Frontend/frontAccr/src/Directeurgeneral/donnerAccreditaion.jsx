@@ -1,6 +1,6 @@
 import '../css/output/tasks.css'
 import '../css/output/dash.css'
-import {SideInspecteur} from "./sideBarre.jsx";
+import {SideDG} from "./sideDG.jsx";
 import {Cardstate} from "../components/dashboard/cardstate.jsx";
 import {Cardoption} from "../components/dashboard/cardoption.jsx";
 import cours from "../img/demande-de-citation.png";
@@ -13,7 +13,7 @@ import {useForm} from "react-hook-form";
 import * as http2 from "node:http2";
 
 
-export const Demandes = () => {
+export const DonnerAccreditaion = () => {
 
     const userId = localStorage.getItem("inspGen")
     const navigate = useNavigate()
@@ -93,6 +93,14 @@ export const Demandes = () => {
         setIdDmd(id)
         setVisible(true)
     }
+
+    const onClickSubmit = async (e)=>{
+        const id = e.target.getAttribute("data-value")
+        const action = e.target.getAttribute("data-value-action")
+
+        const response = await axios.post(`http://localhost:3000/donnerAccreditation`,{idDemande : parseInt(id),action:action})
+        console.log(response)
+    }
     const close = () =>{
         setVisible(false)
     }
@@ -100,7 +108,7 @@ export const Demandes = () => {
     return (
         <>
             <div className={"dash-container"}>
-                <SideInspecteur/>
+                <SideDG/>
                 <Link to={""}></Link>
                 <div className={"dash-content"}>
                     <div className={"div-tasks"}>
@@ -115,29 +123,29 @@ export const Demandes = () => {
                         <div className={"div-task-content"}>
                             <table>
                                 <thead>
-                                    <tr>
-                                        <td>Resp Etb</td>
-                                        <td>Email</td>
-                                        <td>tour</td>
-                                        <td>Etat</td>
-                                        <td>Action</td>
-                                    </tr>
+                                <tr>
+                                    <td>Resp Etb</td>
+                                    <td>Email</td>
+                                    <td>tour</td>
+                                    <td>Etat</td>
+                                    <td>Action</td>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    {
-                                        dmd && dmd.map((dm)=>
-                                            <tr>
-                                                <td>{dm.nom}</td>
-                                                <td>{dm.email}</td>
-                                                <td><span>{dm.inspection == null ? 0: dm.inspection.evaluations.length }/2</span></td>
-                                                <td><span>{dm.statut == 0 ? <span>NON ENCOURS</span> : dm.statut == 1 || dm.statut == 2 ?
+                                {
+                                    dmd && dmd.map((dm)=>
+                                        <tr>
+                                            <td>{dm.nom}</td>
+                                            <td>{dm.email}</td>
+                                            <td><span>{dm.inspection == null ? 0: dm.inspection.evaluations.length }/2</span></td>
+                                            <td><span>{dm.statut == 0 ? <span>NON ENCOURS</span> : dm.statut == 1 || dm.statut == 2 ?
                                                 <span>EN COURS</span> : <span>TERMINE</span>}</span>
-                                                </td>
-                                                <td>
-                                                    <button onClick={handleClick} name={dm.id_demande}>Details</button>
-                                                </td>
-                                            </tr>)
-                                    }
+                                            </td>
+                                            <td>
+                                                <button onClick={handleClick} name={dm.id_demande}>Details</button>
+                                            </td>
+                                        </tr>)
+                                }
                                 </tbody>
                             </table>
                         </div>
@@ -148,7 +156,7 @@ export const Demandes = () => {
                             </div>
                             <div className={"d-card-body"}>
                                 {
-                                        detailsDmd && <h4>Demande soumis le {dataForma(detailsDmd[0].date_demande)}</h4>
+                                    detailsDmd && <h4>Demande soumis le {dataForma(detailsDmd[0].date_demande)}</h4>
                                 }
                                 {
                                     detailsDmd && detailsDmd[0].statut > 1 && detailsDmd[0].statut <= 3
@@ -174,22 +182,12 @@ export const Demandes = () => {
                                             {
                                                 console.log(detailsDmd)
                                             }
-                                            <form onSubmit={handleSubmit(submittAffect)}>
-
-                                                <h4>Affecter un agent</h4>
-                                                <div>
-                                                    {inspecteur && inspecteur.map((insp) =>
-                                                        <div>
-                                                            <input type={"checkbox"} value={insp.id_inspecteur}
-                                                                   id={insp.id_inspecteur} {...register("inspect" + insp.id_inspecteur)}/>
-                                                            <label
-                                                                htmlFor={insp.id_inspecteur}>{insp.nom}</label>
-                                                        </div>)}
-                                                    <Inputs register={register} type={"date"}
-                                                            name={"dateInsp"} placeholder={""}/>
-                                                </div>
-                                                <input type="submit"/>
-                                            </form>
+                                            <div>
+                                                <button data-value={detailsDmd[0].id_demande}
+                                                        onClick={onClickSubmit} data-value-action={1}>Donner accreditation</button>
+                                                <button data-value={detailsDmd[0].id_demande}
+                                                        onClick={onClickSubmit} data-value-action={2}>Refuser accreditation</button>
+                                            </div>
 
                                         </div>
                                         :

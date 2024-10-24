@@ -10,6 +10,8 @@ import {AjouterInspteur} from "./Inspecteur/ajouterInspteur.jsx";
 import {CreerCompte} from "./Admin/creerCompte.jsx";
 import {DashboardInsp} from "./inspInspection/dashboardInsp.jsx";
 import {DemandesIns} from "./inspInspection/demandesIns.jsx";
+import {DashboardGeneral} from "./Directeurgeneral/dashboardGeneral.jsx";
+import {DonnerAccreditaion} from "./Directeurgeneral/donnerAccreditaion.jsx";
 
 
 const router = createBrowserRouter([
@@ -63,12 +65,25 @@ const router = createBrowserRouter([
                 element : <DashboardInsp/>
             },
             {
-                path : "evaluer/:id_demande",
+                path : `evaluer/:id_demande/:id_inspection`,
                 element : <Evaluation/>
             },
             {
                 path : "inspections",
                 element : <DemandesIns/>
+            }
+        ]
+    },
+    {
+        path : "/directeur/",
+        children : [
+            {
+                path: 'general/dashboard',
+                element: <DashboardGeneral/>
+            },
+            {
+                path : "accorder/accreditation",
+                element : <DonnerAccreditaion/>
             }
         ]
     }

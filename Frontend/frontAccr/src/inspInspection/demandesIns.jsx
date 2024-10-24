@@ -112,7 +112,6 @@ export const DemandesIns = () => {
                                 <tr>
                                     <td>Date inspection</td>
                                     <td>Adresse</td>
-                                    <td>tour</td>
                                     <td>Etat</td>
                                     <td>Action</td>
                                 </tr>
@@ -123,16 +122,12 @@ export const DemandesIns = () => {
                                     dmd && dmd.inspections.map((dm)=>
                                         <tr>
                                             <td>{dm.inspection.date_inspection}</td>
-                                            <td>{dm.inspection.demandes[0].adresse}</td>
-                                            <td><span>{
-                                                dm.inspection.statut == "0" ? 1 : 2
-                                            }/2</span></td>
-                                            <td><span>{dm.inspection.statut == "0" ? <span>NON ENCOURS</span> : dm.inspection.statut == "1" ?
-                                                <span>EN COURS</span> : <span>TERMINE</span>}</span>
-                                            </td>
+                                            <td>{dm.inspection.demande.adresse}</td>
+                                            <td>{dm.inspection.statut == 0 ? <span>NON ENCOURS</span> : dm.inspection.statut  == 1 || dm.inspection.statut == 2 ? <span>EN COURS</span> : <span>TERMINE</span>}</td>
                                             <td>
                                                 {dm.inspection.statut <= 2 &&
-                                                    <Link to={`/inspecteur/evaluer/${dm.inspection.demandes[0].id_demande}`}>Evaluer</Link>}
+                                                    <Link
+                                                        to={`/inspecteur/evaluer/${dm.inspection.demande.id_demande}/${dm.inspection.id_inspection}`}>Evaluer</Link>}
                                             </td>
                                         </tr>)
                                 }

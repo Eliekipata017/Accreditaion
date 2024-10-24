@@ -40,7 +40,7 @@ export const Login = () => {
                     navigate("/inspecteur/generale/dashboard");
                 } else {
                     localStorage.setItem("dirGUser", userData.directeurGeneralId);
-                    navigate("/admin/creerCompte");
+                    navigate("/directeur/general/dashboard");
                 }
             }
         } catch (e) {

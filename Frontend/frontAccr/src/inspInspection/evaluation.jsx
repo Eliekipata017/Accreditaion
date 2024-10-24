@@ -5,12 +5,13 @@ import "../App.css";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {reset} from "../hooks/utils.js";
 
 export const Evaluation = () => {
     const { register, handleSubmit } = useForm();
     const [dmd, setDmd] = useState(false);
     const [critere, setCritere] = useState(false);
-    const { id_demande } = useParams();
+    const { id_demande,id_inspection } = useParams();
 
     const fetchData = async () => {
         try {
@@ -20,12 +21,15 @@ export const Evaluation = () => {
             const criteres = await axios.post('http://localhost:3000/getCritere', { type: type_hopital });
             setDmd(demande.data.data);
             setCritere(criteres.data.data);
+            console.log(criteres)
         } catch (error) {
             console.error("Error fetching data:", error);
         }
-    };
 
+    };
+    console.log(dmd)
     const Onsubmit = async (data) => {
+
         const note = Object.entries(data).reduce((acc, [key, value]) => {
             if (key !== "recommandation" && key !== "observation") {
                 return acc + parseInt(value);
@@ -37,17 +41,20 @@ export const Evaluation = () => {
             "recommandation": data["recommandation"],
             "observation": data["observation"],
             "note": note,
-            "inspection": dmd.id_inspection
+            "inspection": parseInt(id_inspection)
         };
-
+        console.log(Ndata)
         try {
+
             const send = await axios.post('http://localhost:3000/evaluer', Ndata);
+            console.log(send)
             if (send.data.success){
                 alert(send.data.success)
             }
         } catch (error) {
             alert("Error submitting evaluation:", error);
         }
+        reset()
     };
 
     useEffect(() => {

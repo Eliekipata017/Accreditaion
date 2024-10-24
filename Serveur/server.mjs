@@ -156,7 +156,6 @@ app.post('/connexion', async (req,res)=>{
         return res.json({"error":e })
     }
 })
-
 /*
 app.post('/saveDemande', async (req,res)=>{
     const {nomEtablissement,adresse,typeEtablissement,email} = req.body
@@ -235,7 +234,6 @@ app.post('/demande', async (req, res) => {
     }
 });
 //  Assigner des inspecteurs à une inspection
-
 app.post('/inspection', async (req, res) => {
     try {
         const { id_demande, date_inspection, type_inspection, statut, inspecteurIds } = req.body;
@@ -341,59 +339,51 @@ app.post('/ajouterInspection', async (req, res) => {
                         }
                     }))
                 },
-                demandes: {
-                    connect: { id_demande: demande },  // Associer la demande
+                demande: {
+                    connect: { id_demande: demande }  // Associer la demande via id_demande
                 },
-            },
+            }
         });
 
         const dmd = await prisma.demande.findFirst({
-            where : {id_demande : demande}
-        })
+            where: { id_demande: demande }
+        });
 
         const inspect = await prisma.inspection.findFirst({
             where: {
-                demandes: {
-                    some: {
-                        id_demande: demande  // Condition pour lier l'inspection à la demande ayant id_demande = 3
-                    }
-                }
+                demandeId: demande,  // Utiliser demandeId pour rechercher les inspections liées à la demande
             },
             include: {
                 inspecteurs: {
                     include: {
-                        inspecteur: true  // Inclut les détails des inspecteurs associés à l'inspection
+                        inspecteur: true  // Inclut les détails des inspecteurs associés
                     }
                 }
             }
         });
+
         const updateDmd = await prisma.demande.update({
-            where : {
-                id_demande : demande
-            },
-            data :{
-                statut : dmd.statut == 1 ? 2 : 1
+            where: { id_demande: demande },
+            data: {
+                statut: dmd.statut == 1 ? 2 : 1
             }
-        })
-        const optionDmd  = {
+        });
+
+        const optionDmd = {
             from: process.env.EMAIL_USER,
             to: dmd.email,
             subject: 'Inspection Programmée',
-            text: `Bonjour ${dmd.nom} ,\n\nUne nouvelle inspection a été programmée pour votre établissement
-        .\n\nDétails de l'inspection:\n- Date: ${dateInsp}\n- Inspecteurs assignés: 
-        ${inspect.inspecteurs.map((inp)=> inp.inspecteur.nom)}\n\nCordialement,\nL'équipe de gestion des inspections.`,
+            text: `Bonjour ${dmd.nom},\n\nUne nouvelle inspection a été programmée pour votre établissement.\n\nDétails de l'inspection:\n- Date: ${dateInsp}\n- Inspecteurs assignés: ${inspect.inspecteurs.map((inp) => inp.inspecteur.nom).join(", ")}\n\nCordialement,\nL'équipe de gestion des inspections.`,
         };
-        const send = await sendEmailToResponsable(optionDmd)
-        if (!(send)){
-            return res.json({ Error: "Mail non envoyé" });
-        }
+
+        const send = await sendEmailToResponsable(optionDmd);
+
         return res.json({ Success: "La demande a été ajoutée avec succès" });
 
     } catch (error) {
         return res.json({ Error: "Erreur : " + error });
     }
 });
-
 app.post('/evaluer',async (req,res)=>{
     const {note,observation,inspection,recommandation} = req.body
 
@@ -413,27 +403,65 @@ app.post('/evaluer',async (req,res)=>{
         return res.json({error : "Error"+e})
     }
 })
+
 app.post('/donnerAccreditation',async  (req,res)=>{
-    const {idDemande} = req.body
+    const {idDemande,action} = req.body
 
     try {
-        const demande = await prisma.demande.findMany({where : { id_demande : idDemande}})
-        try {
+            const demande = await prisma.demande.findFirst({where : { id_demande : idDemande}})
+            try {
             if (demande){
-                const Netab = await prisma.etablissement.create({
-                    data :{
-                        adresse : demande.adresse,
-                        type_etablissement : demande.type_etablissement,
-                        nom_etablissement : demande.nom_etablissement
-                    }
-                })
-                const NChefEtabl = await prisma.chef_Etablissement.create({
-                    data :{
-                        email : "",
-                        etablissements : "",
-                        nom : "",
-                    }
-                })
+                if (action == "1"){
+                    const updDmd = await prisma.demande.update({
+                        where :{
+                            id_demande : demande.id_demande
+                        },
+                        statut : 4
+                    })
+                    const NChefEtabl = await prisma.chef_Etablissement.create({
+                        data :{
+                            email : demande.email,
+                            nom : demande.nom,
+                        }
+                    })
+                    const etabs = await  prisma.etablissement.findMany()
+                    const etab = tab[-1]
+                    const Netab = await prisma.etablissement.create({
+                        data :{
+                            adresse : demande.adresse,
+                            type_etablissement : demande.type_etablissement,
+                            nom_etablissement : demande.nom_etablissement,
+                            chef_etablissement : {
+                                connect : {id_chef:etab.id_etablissement}
+                            }
+                        }
+                    })
+                    const optionDmd = {
+                        from: process.env.EMAIL_USER,
+                        to: dmd.email,
+                        subject: 'Resultat inspection',
+                        text: `Bonjour ${dmd.nom},\n\n Bravo votre demande d'inspection a reussi. \n\nCordialement,\nL'équipe de gestion des inspections.`,
+                    };
+
+                    const send = await sendEmailToResponsable(optionDmd);
+                    return  res.json({success : "Accreditation effectue"})
+                }else{
+                    const optionDmd = {
+                        from: process.env.EMAIL_USER,
+                        to: dmd.email,
+                        subject: 'Resulta inspection',
+                        text: `Bonjour ${dmd.nom},\n\n desole votre demande d'inspection a echoué. \n\nCordialement,\nL'équipe de gestion des inspections.`,
+                    };
+
+                    const send = await sendEmailToResponsable(optionDmd);
+                    const updDmd = await prisma.demande.update({
+                        where :{
+                            id_demande : demande.id_demande
+                        },
+                        statut : 4
+                    })
+                }
+
             }
             else{
                 return res.json({error: "Error : Aucune demande n'a été trouvée"})
@@ -442,9 +470,67 @@ app.post('/donnerAccreditation',async  (req,res)=>{
 
         }
     }catch (e) {
-        return res.json({error: "Error : "+e})
+            console.log(e)
+            return res.json({error: "Error : "+e})
     }
 })
+app.post('/getDemandesAccreditaions', async (req,res)=>{
+    try {
+        // Récupérer toutes les demandes incluant les inspections et inspecteurs
+        const demandes = await prisma.demande.findMany({
+            where : {
+                statut : 3
+            },
+            include: {
+                inspections: { // Note: correction ici, 'inspections' au lieu de 'inspection'
+                    include: {
+                        inspecteurs: {
+                            include: {
+                                inspecteur: true // Inclut les détails de l'inspecteur
+                            }
+                        },
+                        evaluations: true // Inclut les évaluations directement
+                    }
+                }
+            }
+        });
+
+        // Reformater les résultats pour inclure les inspecteurs et les évaluations dans chaque inspection
+        const demandesCompletes = demandes.map(demande => ({
+            id_demande: demande.id_demande,
+            nom_etablissement: demande.nom_etablissement,
+            adresse: demande.adresse,
+            statut: demande.statut,
+            date_demande: demande.date_demande,
+            email: demande.email,
+            nom: demande.nom,
+            inspections: demande.inspections.map(inspection => ({
+                id_inspection: inspection.id_inspection,
+                date_inspection: inspection.date_inspection,
+                type_inspection: inspection.type_inspection,
+                statut_inspection: inspection.statut,
+                inspecteurs: inspection.inspecteurs.map(inspectionInspecteur => ({
+                    id_inspecteur: inspectionInspecteur.inspecteur.id_inspecteur,
+                    nom: inspectionInspecteur.inspecteur.nom,
+                    prenom: inspectionInspecteur.inspecteur.prenom,
+                    statut: inspectionInspecteur.inspecteur.statut
+                })),
+                evaluations: inspection.evaluations.map(evaluation => ({
+                    id_evaluation: evaluation.id_evaluation,
+                    note: evaluation.note,
+                    observation: evaluation.observation,
+                    recommandation: evaluation.recommandation
+                })) // Inclut les évaluations
+            }))
+        }));
+
+        res.status(200).json(demandesCompletes);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur lors de la récupération des demandes complètes", error });
+    }
+})
+
 app.post("/addInspecteur", async (req,res)=>{
     const { nomComplet,email}= req.body
 
@@ -469,7 +555,6 @@ app.post("/addInspecteur", async (req,res)=>{
         return res.json({"error": e})
     }
 })
-
 app.get('/testApp', async (req,res)=>{
     const dmd = await prisma.demande.findFirst({
         where : {id_demande : 3}
@@ -498,12 +583,13 @@ app.get('/testApp', async (req,res)=>{
     return res.json({dmd : dmd, inspect : inspectionAvecInspecteurs})
 
 })
+
 app.get('/getDemandes', async (req, res) => {
     try {
         // Récupérer toutes les demandes incluant les inspections et inspecteurs
         const demandes = await prisma.demande.findMany({
             include: {
-                inspection: {
+                inspections: { // Note: correction ici, 'inspections' au lieu de 'inspection'
                     include: {
                         inspecteurs: {
                             include: {
@@ -525,47 +611,46 @@ app.get('/getDemandes', async (req, res) => {
             date_demande: demande.date_demande,
             email: demande.email,
             nom: demande.nom,
-            inspection: demande.inspection ? {
-                id_inspection: demande.inspection.id_inspection,
-                date_inspection: demande.inspection.date_inspection,
-                type_inspection: demande.inspection.type_inspection,
-                statut_inspection: demande.inspection.statut,
-                inspecteurs: demande.inspection.inspecteurs.map(inspectionInspecteur => ({
+            inspections: demande.inspections.map(inspection => ({
+                id_inspection: inspection.id_inspection,
+                date_inspection: inspection.date_inspection,
+                type_inspection: inspection.type_inspection,
+                statut_inspection: inspection.statut,
+                inspecteurs: inspection.inspecteurs.map(inspectionInspecteur => ({
                     id_inspecteur: inspectionInspecteur.inspecteur.id_inspecteur,
                     nom: inspectionInspecteur.inspecteur.nom,
                     prenom: inspectionInspecteur.inspecteur.prenom,
                     statut: inspectionInspecteur.inspecteur.statut
                 })),
-                evaluations: demande.inspection.evaluations.map(evaluation => ({
+                evaluations: inspection.evaluations.map(evaluation => ({
                     id_evaluation: evaluation.id_evaluation,
                     note: evaluation.note,
                     observation: evaluation.observation,
                     recommandation: evaluation.recommandation
                 })) // Inclut les évaluations
-            } : null
+            }))
         }));
 
         res.status(200).json(demandesCompletes);
     } catch (error) {
-        console.error(error);
         res.status(500).json({ message: "Erreur lors de la récupération des demandes complètes", error });
     }
 });
-
 app.post('/getinsp', async (req, res) => {
     const { id } = req.body;
-    console.log(id)
+    console.log(id);
+
     try {
         const inspInsption = await prisma.inspecteur.findUnique({
             where: {
                 id_inspecteur: parseInt(id),
             },
             include: {
-                inspections: {
+                inspections: { // Le modèle intermédiaire entre l'inspecteur et l'inspection
                     include: {
-                        inspection: {
+                        inspection: { // Le modèle d'inspection, qui contient peut-être la relation avec demande
                             include: {
-                                demandes: true, // Ici vous incluez les demandes à travers le modèle Inspection
+                                demande: true, // Assure-toi que la relation est correcte dans ton schéma, peut-être "demande"
                             },
                         },
                     },
@@ -573,22 +658,20 @@ app.post('/getinsp', async (req, res) => {
             },
         });
 
-
-        res.json({"data": inspInsption});
+        res.json({ "data": inspInsption });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Une erreur est survenue' });
     }
 });
+
 app.post('/getDemande',async (req,res)=>{
     const {id} = req.body
-
     const demande = await prisma.demande.findFirst({
         where : { id_demande : id}
     })
     return res.json({data:demande})
 })
-
 app.post('/getCritere',async (req,res)=>{
     const {type} = req.body
 
@@ -614,12 +697,21 @@ app.get('/getInspeceur', async (req,res)=>{
     })
     return res.json({data : inspecteurs})
 })
-
 app.post(('/getInspecteur'), async (req,res)=>{
     const {id} = req.body
     const insp = await prisma.inspecteur.findFirst({
         where :{
             id_inspecteur : id
+        }
+    })
+    return res.json({data : insp})
+})
+
+app.post(('/getDirecteur'), async (req,res)=>{
+    const {id} = req.body
+    const insp = await prisma.directeur_General.findFirst({
+        where :{
+            id_directeur : id
         }
     })
     return res.json({data : insp})
